@@ -58,8 +58,7 @@
     // - 'vsRepeatTrigger' - an event the directive listens for to manually trigger reinitialization
     // - 'vsRepeatReinitialized' - an event the directive emits upon reinitialization done
 
-    var isMacOS = navigator.appVersion.indexOf('Mac') != -1,
-        wheelEventName = typeof window.onwheel !== 'undefined' ? 'wheel' : typeof window.onmousewheel !== 'undefined' ? 'mousewheel' : 'DOMMouseScroll',
+    var wheelEventName = typeof window.onwheel !== 'undefined' ? 'wheel' : typeof window.onmousewheel !== 'undefined' ? 'mousewheel' : 'DOMMouseScroll',
         dde = document.documentElement,
         matchingFunction = dde.matches ? 'matches' :
                             dde.matchesSelector ? 'matchesSelector' :
@@ -315,27 +314,6 @@
                         $scope.$fillElement = $fillElement;
 
                         var _prevMouse = {};
-                        if (isMacOS && $attrs.vsScrollParent !== 'window') {
-                            $wheelHelper = angular.element('<div class="vs-repeat-wheel-helper"></div>')
-                                .on(wheelEventName, function(e) {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    if (e.originalEvent) {
-                                        e = e.originalEvent;
-                                    }
-                                    $scrollParent[0].scrollLeft += (e.deltaX || -e.wheelDeltaX);
-                                    $scrollParent[0].scrollTop += (e.deltaY || -e.wheelDeltaY);
-                                }).on('mousemove', function(e) {
-                                    if (_prevMouse.x !== e.clientX || _prevMouse.y !== e.clientY) {
-                                        angular.element(this).css('display', 'none');
-                                    }
-                                    _prevMouse = {
-                                        x: e.clientX,
-                                        y: e.clientY
-                                    };
-                                }).css('display', 'none');
-                            $fillElement.append($wheelHelper);
-                        }
 
                         $scope.startIndex = 0;
                         $scope.endIndex = 0;
@@ -355,15 +333,6 @@
                             }
                         });
 
-                        if (isMacOS) {
-                            $scrollParent.on(wheelEventName, wheelHandler);
-                        }
-                        function wheelHandler(e) {
-                            var elem = e.currentTarget;
-                            if (elem.scrollWidth > elem.clientWidth || elem.scrollHeight > elem.clientHeight) {
-                                $wheelHelper.css('display', 'block');
-                            }
-                        }
 
                         function onWindowResize() {
                             if (typeof $attrs.vsAutoresize !== 'undefined') {
